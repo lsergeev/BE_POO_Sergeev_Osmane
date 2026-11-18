@@ -1,65 +1,40 @@
-# Protocole d'échange page web ↔ ESP8266
+# Protocole page web ↔ ESP8266
 
-## Transport
-| Rôle | Canal | Détail |
+## 1. Transport :
+
+- HTTP (port 80) : juste pour charger la page.
+- WebSocket (port 81, `ws://192.168.4.1:81/`) : commandes et état, en texte.
+- Un seul conducteur à la fois, le deuxième est refusé.
+
+## 2. Page → ESP :
+
+| Message | Sens | Quand |
 |---|---|---|
-| Livraison de la page | HTTP, port 80 | `GET /` renvoie `PageWeb.h` (HTML, CSS et JS dans un seul fichier, stocké en PROGMEM). Toute autre URL renvoie aussi la page. |
-| Pilotage et état | WebSocket, port 81 | `ws://192.168.4.1:81/`, trames **texte**, un message par trame |
+| `C v d` | vitesse et direction, de −100 à 100 % | 10 fois par seconde, même `C 0 0` (sert de battement de cœur) |
+| `P 0` / `P 1` | phares | à l'appui |
+| `K` | klaxon (400 ms) | à l'appui |
+| `S n` | seuil d'arrêt en recul, de 10 à 100 cm | au relâchement du curseur |
 
-On n'accepte qu'un seul conducteur à la fois. Un second client est refusé (fermeture avec un message `{"t":"err","msg":"occupé"}`).
+Un message faux (lettre inconnue, nombre manquant, hors bornes) lève une `ErreurProtocole`. Il est ignoré et l'ESP répond `{"t":"err","msg":"..."}`. Rien ne bouge.
 
-## Page → ESP (commandes)
+## 3. ESP → page :
 
-Ce sont de courts messages ASCII. Le décodage est trivial (`strtol`) et ne demande aucune bibliothèque.
-
-| Message | Paramètres | Fréquence | Effet |
-|---|---|---|---|
-| `C <v> <d>` | `v` = consigne de vitesse en %, de −100 à 100 (négatif = arrière). `d` = direction en %, de −100 (gauche) à 100 (droite). | **10 Hz en continu** tant que la page est visible, y compris `C 0 0` au repos | Conduite. Sert aussi de **battement de cœur** pour le chien de garde. |
-| `P <0\|1>` | 0 = éteint, 1 = allumé | à l'appui | phares |
-| `K` | — | à l'appui | coup de klaxon (400 ms, durée fixée côté ESP) |
-| `S <cm>` | seuil d'arrêt en recul, de 10 à 100 | au relâchement du curseur | règle le seuil |
-
-Exemples : `C 70 -50` · `C -30 0` · `P 1` · `K` · `S 25`
-
-**Validation** : `Protocole::decoder()` lève une `ErreurProtocole` dans ces cas :
-- message vide ;
-- lettre inconnue ;
-- paramètre manquant ou non numérique ;
-- valeur hors bornes.
-
-`ServeurPilotage` attrape l'exception, ignore le message, incrémente un compteur et répond `{"t":"err","msg":"<raison>"}`. Une trame corrompue ne fait donc **jamais** bouger la voiture.
-
-## ESP → page (état)
-
-C'est un objet JSON, parce que le navigateur le lit nativement avec `JSON.parse`. Il est construit avec `snprintf`, sans bibliothèque JSON.
-Il est diffusé **toutes les 200 ms (5 Hz)**, ainsi qu'à chaque changement de mode.
+Du JSON, parce que le navigateur le lit directement. On l'écrit avec `snprintf`, sans bibliothèque. Envoyé toutes les 200 ms.
 
 ```json
 {"t":"etat","v":-35,"c":-50,"dir":0,"dist":42,"seuil":20,"ph":1,"fr":1,"capt":1,"mode":"ARRIERE"}
 ```
 
-| Champ | Type | Signification |
-|---|---|---|
-| `t` | texte | type de message : `etat` ou `err` |
-| `v` | entier, −100 à 100 | vitesse **réellement appliquée** (après rampe et limitation) |
-| `c` | entier, −100 à 100 | consigne reçue |
-| `dir` | entier, −100 à 100 | direction |
-| `dist` | entier | distance arrière en cm, `-1` si le capteur est KO |
-| `seuil` | entier | seuil d'arrêt en cm |
-| `ph`, `fr` | 0 ou 1 | phares, feux de recul |
-| `capt` | 0 ou 1 | capteur arrière fiable |
-| `mode` | texte | `ARRET`, `AVANT`, `ARRIERE`, `BLOQUE` ou `SECURITE` |
+- `v` : vitesse appliquée ; `c` : consigne ; `dir` : direction (en %).
+- `dist` : distance en cm (`-1` si le capteur est KO) ; `seuil` : seuil d'arrêt en cm.
+- `ph`, `fr`, `capt` : phares, feux de recul, capteur OK (0 ou 1).
+- `mode` : `ARRET`, `AVANT`, `ARRIERE`, `BLOQUE` ou `SECURITE`.
 
-## Temporisations (toutes dans `Config.h`)
+## 4. Temps (dans `Config.h`) :
 
-| Constante | Valeur | Rôle |
-|---|---|---|
-| `PERIODE_COMMANDE_MS` (côté page, répétée dans le JS) | 100 | cadence d'envoi de `C` |
-| `TIMEOUT_COMMANDE_MS` | 500 | au-delà, mode SÉCURITÉ et arrêt (5 trames perdues tolérées) |
-| `PERIODE_ETAT_MS` | 200 | cadence de diffusion de l'état |
-| `PERIODE_MESURE_MS` | 60 | cadence de l'ultrason (minimum recommandé par le fabricant) |
+- Commandes : toutes les 100 ms.
+- Chien de garde : 500 ms sans commande, arrêt.
+- État : toutes les 200 ms.
+- Ultrason : une mesure toutes les 60 ms.
 
-## Comportement de la page
-- Elle envoie `C 0 0` puis ferme le WebSocket sur l'événement `visibilitychange` (onglet masqué ou téléphone verrouillé), en plus du chien de garde côté ESP.
-- Elle se reconnecte automatiquement toutes les secondes si la liaison est perdue, avec un indicateur rouge ou vert.
-- Elle ne s'appuie pas sur une latence garantie : tous les comportements de sécurité sont **décidés côté ESP**.
+Si on verrouille le téléphone, la page envoie `C 0 0` et se déconnecte. De toute façon, c'est l'ESP qui décide de la sécurité.

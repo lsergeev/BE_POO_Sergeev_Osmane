@@ -1,7 +1,6 @@
-# Diagramme de séquence — « marche arrière avec obstacle » (scénario S3)
+# Diagramme de séquence : marche arrière avec obstacle (S3)
 
-Toutes les flèches internes à l'ESP sont des appels synchrones faits depuis `loop()` (`Application::run()`).
-Aucun appel ne bloque. Seule la fin de l'écho ultrason arrive par interruption (ISR).
+Tout se passe dans `loop()`, sans rien qui bloque. Seule la fin de l'écho ultrason arrive par interruption.
 
 ```mermaid
 sequenceDiagram

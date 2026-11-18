@@ -1,10 +1,6 @@
 # Diagramme de classes
 
-Le diagramme est écrit en Mermaid, que GitHub affiche directement. Il distingue deux espaces :
-- `Bibliotheque_PeripheriquesIoT` : `libraries/PeripheriquesIoT`, générique et réutilisable ;
-- `Application_projet_voiture_sergeev_osmane` : `projet_voiture_sergeev_osmane/`, propre à la voiture.
-
-Les exceptions dérivent toutes de `std::runtime_error`.
+En Mermaid, GitHub l'affiche directement. Deux blocs : la bibliothèque et l'appli.
 
 ```mermaid
 classDiagram
@@ -243,15 +239,12 @@ classDiagram
     Protocole ..> EtatVoiture
 ```
 
-## Lecture du diagramme
+## Comment le lire :
 
-- **`Peripherique`** regroupe ce qui est commun à tout composant : un nom, une broche, un état « prêt », le cycle de vie `begin()` puis `update()`, et la description `decrire()`.
-  - `begin()` et `decrire()` suivent le patron *interface non virtuelle* : le déroulement est fixé dans la classe de base (vérifier la configuration, puis initialiser le matériel, puis marquer prêt), et les classes filles ne fournissent que les étapes virtuelles `verifierConfiguration()`, `initialiser()`, `type()` et `decrireDetails()`.
-  - Le constructeur ne touche pas au matériel et ne lève jamais d'exception : les objets peuvent être globaux, alors qu'une exception levée avant `setup()` ne pourrait pas être attrapée. Toute vérification a lieu dans `begin()`.
-  - La vérification des broches (`exigerBrocheValide()`, `exigerPwm()`) est faite une fois pour toutes ici. Elle lève une `ErreurBroche` pour GPIO6–11 (flash interne) ou si on demande du PWM sur GPIO16.
-  - `operator<<(Print&, const Peripherique&)` est une fonction libre qui appelle `decrire()`, une méthode virtuelle. On peut donc écrire `Serial << moteur` quelle que soit la classe réelle de l'objet.
-- **`Capteur`** factorise le cadencement : `update()` appelle `acquerir()` toutes les `periodeMs_`.
-- **`Actionneur`** impose `arreter()`, la mise en sécurité propre à chaque actionneur. La LED s'éteint, le buzzer se tait, le servo revient au neutre et le moteur passe à une consigne nulle. `Voiture::miseEnSecurite()` parcourt simplement ses actionneurs.
-- **`MoteurCC`** contient toute la logique indépendante du pont en H : rampe, pause d'inversion, arrêt immédiat. **`MoteurBTS7960`** ne fait que traduire une vitesse signée en PWM sur RPWM et LPWM, et gérer EN. Un autre pont (L298N, DRV8871) ne demanderait qu'une nouvelle classe fille.
-- **`Voiture`** est une **composition** : elle possède ses périphériques et la durée de vie est commune. `peripheriques_` (`std::vector<Peripherique*>`) pointe vers ces membres pour les traiter de façon polymorphe. Les pointeurs ne sont pas propriétaires, donc il n'y a pas d'allocation dynamique.
-- **`ServeurPilotage`** ne connaît pas `Voiture`. Il signale les commandes reçues par des `std::function` branchées dans `Application::init()`. Le serveur peut ainsi être testé seul et la voiture peut être pilotée par une autre source, par exemple le port série.
+- **`Peripherique`** : ce qui est commun à tout (nom, broche, `begin()`, `update()`, `decrire()`). `begin()` vérifie la config puis initialise le matériel. Le constructeur ne fait rien de risqué, parce que nos objets sont globaux et qu'une exception avant `setup()` ne peut pas être attrapée.
+- **`operator<<`** : appelle `decrire()`, qui est virtuelle. `Serial << moteur` marche donc pour n'importe quel périphérique.
+- **`Capteur`** : appelle `acquerir()` toutes les X ms.
+- **`Actionneur`** : impose `arreter()`. Pour tout mettre en sécurité, `Voiture` n'a qu'à appeler `arreter()` sur chacun.
+- **`MoteurCC` / `MoteurBTS7960`** : la rampe est dans la classe mère, le PWM dans la fille. Pour un autre pont en H, il suffit d'une nouvelle classe fille.
+- **`Voiture`** : contient ses périphériques. Le `vector<Peripherique*>` sert juste à les parcourir.
+- **`ServeurPilotage`** : ne connaît pas `Voiture`, il passe les commandes par des `std::function`.
