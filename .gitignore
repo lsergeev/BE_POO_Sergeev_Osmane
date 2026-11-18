@@ -30,3 +30,29 @@
 *.exe
 *.out
 *.app
+
+# Artefacts de compilation (arduino-cli / IDE)
+build/
+**/build/
+*.bin
+*.elf
+*.map
+*.o
+*.a
+
+# Archive des sources générée par git archive
+*.zip
+
+# Exports du rapport
+docs/*.pdf
+
+# Bibliothèques tierces installées si le dossier du dépôt sert de carnet de croquis
+libraries/*
+!libraries/PeripheriquesIoT/
+
+# Environnements de développement
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
