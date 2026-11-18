@@ -1,6 +1,6 @@
 # Voiture RC pilotée par téléphone : fiche de validation
 
-OSMANE Johan, SERGEEV Leonid (3AE FISA)
+OSMANE Johan, SERGEEV Leonid (4AE FISA)
 
 **L'idée :** une voiture RC (moteur 30 W, servo de direction) pilotée depuis le navigateur du téléphone, sans appli. En plus : aide au recul avec feux, bip qui accélère et arrêt automatique sous un seuil réglable.
 

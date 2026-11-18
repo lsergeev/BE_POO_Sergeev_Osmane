@@ -1,6 +1,6 @@
 # projet_voiture_sergeev_osmane
 
-Voiture RC pilotée depuis le navigateur d'un téléphone, avec une page web servie par un ESP8266. BE C++ de l'INSA Toulouse, 3AE FISA.
+Voiture RC pilotée depuis le navigateur d'un téléphone, avec une page web servie par un ESP8266. BE C++ de l'INSA Toulouse, 4AE FISA.
 OSMANE Johan, SERGEEV Leonid.
 
 En plus de la conduite : aide au recul (feux, bip qui accélère, arrêt automatique sous un seuil réglable).

@@ -1,6 +1,6 @@
 # Architecture du projet
 
-OSMANE Johan, SERGEEV Leonid (3AE FISA)
+OSMANE Johan, SERGEEV Leonid (4AE FISA)
 
 Voir aussi : [cas d'utilisation](cas_utilisation.md), [classes](diagramme_classes.md), [séquence](diagramme_sequence.md), [câblage](cablage.md), [protocole](protocole.md), [planning](planning.md).
 
