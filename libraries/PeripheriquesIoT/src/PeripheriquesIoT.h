@@ -6,7 +6,7 @@
  * Hiérarchie :
  *   Peripherique
  *   ├── Capteur ── CapteurUltrason
- *   └── Actionneur ── Led, Buzzer, Servomoteur
+ *   └── Actionneur ── Led, Buzzer, Servomoteur, MoteurCC ── MoteurBTS7960
  * Exceptions : ErreurPeripherique ── ErreurBroche, ErreurMesure
  *
  * Prérequis : option « C++ Exceptions : Enabled » (Outils de l'IDE).
@@ -23,5 +23,7 @@
 #include "Buzzer.h"
 #include "Servomoteur.h"
 #include "CapteurUltrason.h"
+#include "MoteurCC.h"
+#include "MoteurBTS7960.h"
 
 #endif
