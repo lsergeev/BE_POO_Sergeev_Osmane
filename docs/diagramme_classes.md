@@ -101,11 +101,13 @@ classDiagram
             <<abstract>>
             -int8_t consigne_
             -float vitesse_
-            -float penteParS_
+            -uint16_t penteAcceleration_
+            -uint16_t penteDeceleration_
             -uint16_t pauseInversionMs_
-            +setConsigne(int8_t pourcent) void
+            +setConsigne(int pourcent) void
             +consigne() int8_t
             +vitesse() int8_t
+            +enPauseInversion() bool
             +arreter() void
             +arretImmediat() void
             +update(maintenantMs) void
@@ -114,8 +116,10 @@ classDiagram
         class MoteurBTS7960 {
             -uint8_t brocheLpwm_
             -uint8_t brocheEnable_
-            -uint16_t pwmMax_
-            +begin() void
+            -uint32_t frequencePwmHz_
+            -bool active_
+            +activer() void
+            +desactiver() void
             #appliquer(int8_t vitesse) void
         }
         class ErreurPeripherique {
@@ -167,6 +171,8 @@ classDiagram
             <<utility>>
             +decoder(const char* texte)$ Commande
             +encoder(const EtatVoiture& e, char* tampon, size_t taille)$ size_t
+            +encoderErreur(const char* raison, char* tampon, size_t taille)$ size_t
+            +nomMode(ModeConduite mode)$ const char*
         }
         class Commande {
             <<struct>>
