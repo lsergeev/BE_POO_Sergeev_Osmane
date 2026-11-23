@@ -115,6 +115,13 @@ namespace config
     constexpr uint32_t TIMEOUT_COMMANDE_MS = 500;  ///< sans commande : arrêt
   }
 
+  /** @brief Messages échangés avec la page (voir docs/protocole.md) */
+  namespace protocole
+  {
+    constexpr int POURCENT_MAX     = 100;  ///< vitesse et direction de -100 à 100 %
+    constexpr size_t LONGUEUR_MAX  = 32;   ///< au-delà, le message est refusé
+  }
+
   /** @brief Point d'accès Wi-Fi et serveurs */
   namespace reseau
   {
