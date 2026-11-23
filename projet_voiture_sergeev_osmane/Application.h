@@ -47,12 +47,21 @@ class Application
   private :
     /** @brief Applique une commande reçue de la page */
     void traiterCommande(const Commande& commande);
+    /** @brief Arrête le moteur et remet les roues droites (liaison perdue) */
+    void miseEnSecurite();
+    /** @brief Mode à afficher sur la page */
+    ModeConduite mode() const;
+    /** @brief Envoie l'état à la page */
+    void envoyerEtat();
 
     Led ledEtat_;                 ///< LED bleue de la carte : état du système
     MoteurBTS7960 moteur_;        ///< propulsion
     Servomoteur direction_;       ///< direction
     ServeurPilotage serveur_;     ///< Wi-Fi, page et WebSocket
     Commande derniereCommande_;   ///< pour n'afficher que les changements
+    uint32_t derniereCommandeMs_; ///< date de la dernière commande de conduite
+    uint32_t dernierEtatMs_;      ///< date du dernier envoi de l'état
+    bool enSecurite_;             ///< vrai tant qu'aucune commande n'arrive
     bool initialisee_;            ///< vrai si init() a réussi
 };
 #endif
