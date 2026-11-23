@@ -51,16 +51,67 @@ struct Commande
   bool operator!=(const Commande& autre) const { return !(*this == autre); }
 };
 
+/** @brief Mode de conduite affiché sur la page */
+enum class ModeConduite : uint8_t
+{
+  ARRET,     ///< vitesse nulle
+  AVANT,     ///< marche avant
+  ARRIERE,   ///< marche arrière
+  BLOQUE,    ///< recul bloqué par un obstacle
+  SECURITE   ///< liaison perdue ou erreur : moteur arrêté
+};
+
+/**
+ * @struct EtatVoiture
+ * @brief Ce que l'ESP renvoie à la page 5 fois par seconde
+ */
+struct EtatVoiture
+{
+  int8_t vitesse = 0;                       ///< vitesse appliquée (%)
+  int8_t consigne = 0;                      ///< consigne reçue (%)
+  int8_t direction = 0;                     ///< direction (%)
+  int16_t distanceCm = -1;                  ///< distance arrière, -1 si capteur KO
+  uint16_t seuilCm = 0;                     ///< seuil d'arrêt en recul
+  bool phares = false;                      ///< phares allumés
+  bool feuxRecul = false;                   ///< feux de recul allumés
+  bool capteurOk = false;                   ///< capteur arrière fiable
+  ModeConduite mode = ModeConduite::ARRET;  ///< mode courant
+};
+
 /**
  * @class Protocole
- * @brief Décodage des commandes (texte → Commande)
+ * @brief Décodage des commandes (texte → Commande) et encodage de l'état (→ JSON)
  *
  * Classe utilitaire : que des méthodes statiques, pas d'instance.
  */
 class Protocole
 {
   public:
+    static constexpr size_t TAILLE_TAMPON = 160;  ///< taille conseillée pour encoder()
+
     Protocole() = delete;
+
+    /**
+     * @brief Écrit l'état en JSON, par ex. {"t":"etat","v":-35,...}
+     * @param etat état de la voiture
+     * @param tampon zone où écrire
+     * @param taille taille du tampon
+     * @return nombre de caractères écrits (sans le '\0')
+     * @throw ErreurProtocole si le tampon est trop petit
+     */
+    static size_t encoder(const EtatVoiture& etat, char* tampon, size_t taille);
+
+    /**
+     * @brief Écrit un message d'erreur en JSON : {"t":"err","msg":"..."}
+     * @param raison texte de l'erreur (les guillemets sont remplacés)
+     * @param tampon zone où écrire
+     * @param taille taille du tampon
+     * @return nombre de caractères écrits, 0 si le tampon est trop petit
+     */
+    static size_t encoderErreur(const char* raison, char* tampon, size_t taille);
+
+    /** @brief Nom du mode tel qu'envoyé à la page (« ARRET », « AVANT », ...) */
+    static const char* nomMode(ModeConduite mode);
 
     /**
      * @brief Décode un message texte reçu par WebSocket

@@ -65,6 +65,61 @@ Commande Protocole::decoder(const char* texte)
   return commande;
 }
 
+size_t Protocole::encoder(const EtatVoiture& etat, char* tampon, size_t taille)
+{
+  const int n = snprintf(tampon, taille,
+    "{\"t\":\"etat\",\"v\":%d,\"c\":%d,\"dir\":%d,\"dist\":%d,\"seuil\":%u,"
+    "\"ph\":%d,\"fr\":%d,\"capt\":%d,\"mode\":\"%s\"}",
+    etat.vitesse, etat.consigne, etat.direction, etat.distanceCm,
+    static_cast<unsigned>(etat.seuilCm), etat.phares ? 1 : 0, etat.feuxRecul ? 1 : 0,
+    etat.capteurOk ? 1 : 0, nomMode(etat.mode));
+  if (n < 0 || static_cast<size_t>(n) >= taille)
+  {
+    throw ErreurProtocole("tampon trop petit pour l'etat");
+  }
+  return static_cast<size_t>(n);
+}
+
+size_t Protocole::encoderErreur(const char* raison, char* tampon, size_t taille)
+{
+  constexpr char DEBUT[] = "{\"t\":\"err\",\"msg\":\"";
+  constexpr char FIN[] = "\"}";
+  const size_t longueurFixe = sizeof(DEBUT) - 1 + sizeof(FIN) - 1;
+  if (taille <= longueurFixe)
+  {
+    return 0;
+  }
+  size_t i = 0;
+  for (const char* c = DEBUT; *c != '\0'; ++c)
+  {
+    tampon[i++] = *c;
+  }
+  // On recopie la raison en évitant de casser le JSON (guillemets, antislash).
+  for (const char* c = raison; c != nullptr && *c != '\0' && i + sizeof(FIN) < taille; ++c)
+  {
+    tampon[i++] = (*c == '"' || *c == '\\') ? '\'' : *c;
+  }
+  for (const char* c = FIN; *c != '\0'; ++c)
+  {
+    tampon[i++] = *c;
+  }
+  tampon[i] = '\0';
+  return i;
+}
+
+const char* Protocole::nomMode(ModeConduite mode)
+{
+  switch (mode)
+  {
+    case ModeConduite::ARRET:    return "ARRET";
+    case ModeConduite::AVANT:    return "AVANT";
+    case ModeConduite::ARRIERE:  return "ARRIERE";
+    case ModeConduite::BLOQUE:   return "BLOQUE";
+    case ModeConduite::SECURITE: return "SECURITE";
+  }
+  return "?";
+}
+
 long Protocole::lireEntier(const char*& curseur, long min, long max, const char* champ)
 {
   if (*curseur != ' ')
