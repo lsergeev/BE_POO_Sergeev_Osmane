@@ -2,10 +2,6 @@
  * @file  PageWeb.h
  * @author L. Sergeev, J. Osmane
  * @brief Page de pilotage servie par l'ESP (HTML + CSS + JS, en flash)
- *
- * Première version : deux curseurs (vitesse et direction) qui reviennent
- * à 0 quand on les lâche, et l'état renvoyé par l'ESP. La période
- * d'envoi (100 ms) doit rester égale à config::reseau::PERIODE_COMMANDE_MS.
  *********************************************************************/
 #ifndef PAGE_WEB_H_
 #define PAGE_WEB_H_

@@ -2,18 +2,6 @@
  * @file  TestMoteur.ino
  * @author L. Sergeev, J. Osmane
  * @brief Test de MoteurBTS7960 : rampe, pause avant inversion, arrêt immédiat
- *
- * Sans le BTS7960 : une LED (+ résistance) sur D1 et une sur D2.
- * La luminosité suit la vitesse, on voit la rampe et la pause.
- * Avec le BTS7960 : roues en l'air !
- *
- * Séquence (en boucle) :
- *  1. avant 60 %, 3 s
- *  2. arrière 60 % directement (on doit voir le passage par 0 et la pause)
- *  3. arrêt avec rampe, 2 s
- *  4. avant 100 %, puis arrêt immédiat
- * La vitesse s'affiche toutes les 100 ms (lisible avec le traceur série).
- * Brochage identique à projet_voiture_sergeev_osmane/Config.h.
  *********************************************************************/
 #include <PeripheriquesIoT.h>
 

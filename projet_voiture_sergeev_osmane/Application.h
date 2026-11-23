@@ -2,9 +2,6 @@
  * @file  Application.h
  * @author L. Sergeev, J. Osmane
  * @brief Fichier header de l'application (chef d'orchestre)
- *
- * Séance 2 : le moteur et la direction sont pilotés depuis le téléphone.
- * La classe Voiture (recul, phares, klaxon) arrive en séance 3.
  *********************************************************************/
 #ifndef APPLICATION_H_
 #define APPLICATION_H_
@@ -33,9 +30,6 @@ class Application
     /**
      * @fn void init(void)
      * @brief Fonction d'initialisation de l'application, appelée par setup()
-     *
-     * Les exceptions de configuration sont attrapées ici : la carte reste
-     * alors dans un état sûr et la LED d'état clignote rapidement.
     */
     void init(void);
     /**

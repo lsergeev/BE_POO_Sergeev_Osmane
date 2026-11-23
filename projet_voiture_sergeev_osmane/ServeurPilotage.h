@@ -14,10 +14,6 @@
 /**
  * @class ServeurPilotage
  * @brief Fait le lien entre le téléphone et le reste du programme
- *
- * Le serveur ne connaît pas la voiture : il décode les messages et
- * prévient l'application par des rappels (std::function). Un seul
- * conducteur est accepté à la fois, les autres sont refusés.
  */
 class ServeurPilotage
 {

@@ -11,11 +11,6 @@
 /**
  * @class Actionneur
  * @brief Périphérique qui agit sur le monde et sait se mettre en sécurité
- *
- * arreter() ramène l'actionneur dans son état sûr (LED éteinte, buzzer
- * muet, servo au neutre, moteur arrêté). Une application peut ainsi
- * mettre tout un système en sécurité en parcourant ses actionneurs,
- * sans connaître leur type exact.
  */
 class Actionneur : public Peripherique
 {

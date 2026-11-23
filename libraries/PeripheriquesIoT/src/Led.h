@@ -11,10 +11,6 @@
 /**
  * @class Led
  * @brief LED pilotée par une broche, avec clignotement non bloquant
- *
- * Le câblage « actif à l'état bas » (3V3 → résistance → LED → broche)
- * est géré par un paramètre : il permet d'utiliser les broches qui
- * doivent rester hautes au démarrage (GPIO0, GPIO2, RX) sans gêner le boot.
  */
 class Led : public Actionneur
 {
@@ -37,9 +33,6 @@ class Led : public Actionneur
     void basculer();
     /**
      * @brief Fait clignoter la LED (rapport cyclique 50 %)
-     *
-     * Un appel avec la période déjà en cours ne fait rien : la méthode
-     * peut donc être appelée à chaque tour de boucle.
      * @param periodeMs période complète (allumée + éteinte), en ms
      */
     void clignoter(uint32_t periodeMs);

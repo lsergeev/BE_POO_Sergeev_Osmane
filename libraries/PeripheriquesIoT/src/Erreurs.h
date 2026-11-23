@@ -2,10 +2,6 @@
  * @file  Erreurs.h
  * @author L. Sergeev, J. Osmane
  * @brief Exceptions levées par la bibliothèque PeripheriquesIoT
- *
- * Toutes dérivent de std::runtime_error : l'application peut les
- * attraper finement (ErreurBroche, ErreurMesure) ou globalement
- * (ErreurPeripherique, std::exception).
  *********************************************************************/
 #ifndef PERIPHERIQUES_IOT_ERREURS_H_
 #define PERIPHERIQUES_IOT_ERREURS_H_

@@ -11,14 +11,6 @@
 /**
  * @class MoteurCC
  * @brief Partie commune à tous les moteurs CC, quel que soit le pont en H
- *
- * On donne une consigne en % (-100 à 100). update() fait évoluer la
- * vitesse réelle vers la consigne en respectant :
- *  - une pente d'accélération et une pente de décélération (en %/s) ;
- *  - un passage par 0 avant chaque changement de sens, avec une pause
- *    à l'arrêt pour protéger le moteur et le pont.
- * La classe fille n'a qu'à écrire appliquer() pour traduire la vitesse
- * en signaux pour son pont (patron méthode modèle).
  */
 class MoteurCC : public Actionneur
 {

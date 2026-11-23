@@ -2,15 +2,6 @@
  * @file  TestServo.ino
  * @author L. Sergeev, J. Osmane
  * @brief Test et calibration de la classe Servomoteur
- *
- * Attendu :
- *  - à la mise sous tension, le servo reste au neutre (pas d'à-coup) 3 s ;
- *  - puis il balaie de -100 % à +100 % en continu ;
- *  - calibration : taper un pourcentage (ex. -50) dans le moniteur série
- *    (115200 bauds, fin de ligne « Nouvelle ligne ») fige le servo à cette
- *    orientation ; taper « b » relance le balayage.
- * Ajuster ANGLE_NEUTRE et AMPLITUDE pour que les roues soient droites à 0 %
- * et en butée sans forcer à ±100 %, puis reporter les valeurs dans Config.h.
  *********************************************************************/
 #include <PeripheriquesIoT.h>
 

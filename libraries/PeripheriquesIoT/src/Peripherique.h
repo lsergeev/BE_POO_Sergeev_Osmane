@@ -12,19 +12,6 @@
 /**
  * @class Peripherique
  * @brief Ce qui est commun à tout composant branché sur l'ESP8266
- *
- * Cycle de vie : construction (aucune vérification, aucun accès matériel,
- * donc utilisable pour des objets globaux) → begin() (vérifie la
- * configuration puis initialise le matériel, peut lever une exception)
- * → update() appelée à chaque tour de loop().
- *
- * begin() et decrire() suivent le patron « interface non virtuelle » :
- * le déroulement est fixé ici, les classes filles ne fournissent que
- * les étapes variables (verifierConfiguration(), initialiser(),
- * type(), decrireDetails()).
- *
- * Un périphérique représente une ressource matérielle unique : il n'est
- * pas copiable.
  */
 class Peripherique
 {
@@ -77,12 +64,7 @@ class Peripherique
     static bool estBrochePwm(uint8_t broche);
 
   protected:
-    /**
-     * @brief Contrôle la configuration avant tout accès matériel
-     *
-     * Par défaut, vérifie que la broche principale est valide. Les classes
-     * filles complètent (PWM, plages d'angle, ...).
-     */
+    /** @brief Contrôle la configuration avant tout accès matériel */
     virtual void verifierConfiguration() const;
 
     /** @brief Configure le matériel (pinMode, attach, ...). Appelée par begin(). */
@@ -103,10 +85,6 @@ class Peripherique
 
 /**
  * @brief Écrit la description d'un périphérique : Serial << moteur << servo;
- *
- * Fonction libre qui s'appuie sur decrire(), elle-même construite sur
- * des méthodes virtuelles : elle fonctionne pour toute classe fille,
- * y compris via une référence ou un pointeur de base.
  * @param sortie flux de sortie
  * @param p périphérique à décrire
  * @return le flux, pour enchaîner les <<

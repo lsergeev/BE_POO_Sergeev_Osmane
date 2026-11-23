@@ -11,14 +11,6 @@
 /**
  * @class MoteurBTS7960
  * @brief Traduit la vitesse de MoteurCC en PWM sur RPWM / LPWM
- *
- * Vitesse positive : PWM sur RPWM, LPWM à 0. Négative : l'inverse.
- * Nulle : les deux à 0, ce qui freine le moteur (les deux transistors
- * du bas conduisent). R_EN et L_EN sont reliées à une seule broche :
- * à 0 le pont est coupé (roue libre).
- *
- * Attention : analogWriteFreq() et analogWriteRange() sont globales sur
- * l'ESP8266, elles s'appliquent à toutes les sorties analogWrite().
  */
 class MoteurBTS7960 : public MoteurCC
 {

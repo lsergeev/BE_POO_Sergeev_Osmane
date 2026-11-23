@@ -11,12 +11,6 @@
 /**
  * @class Buzzer
  * @brief Buzzer piloté par tone()/noTone(), entièrement non bloquant
- *
- * Deux couches de son :
- *  - un « fond » permanent : silence, bips périodiques ou son continu ;
- *  - un bip ponctuel (ex. klaxon) prioritaire : il masque le fond
- *    pendant sa durée, puis le fond reprend.
- * update() doit être appelée à chaque tour de boucle.
  */
 class Buzzer : public Actionneur
 {
@@ -43,9 +37,6 @@ class Buzzer : public Actionneur
     void bip(uint16_t dureeMs, uint16_t frequenceHz);
     /**
      * @brief Fond : un bip toutes les periodeMs
-     *
-     * Rappeler avec la même période ne relance pas le cycle : la méthode
-     * peut être appelée à chaque tour de boucle.
      * @param periodeMs période entre deux débuts de bip
      */
     void bipPeriodique(uint16_t periodeMs);

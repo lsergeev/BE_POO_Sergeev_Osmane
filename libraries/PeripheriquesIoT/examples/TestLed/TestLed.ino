@@ -2,13 +2,6 @@
  * @file  TestLed.ino
  * @author L. Sergeev, J. Osmane
  * @brief Test de la classe Led : LED d'état, phares, feux de recul
- *
- * Attendu :
- *  - LED bleue de la carte : clignote à 1 Hz ;
- *  - phares (D3) et feux de recul (RX) : s'allument en alternance chaque seconde ;
- *  - la carte redémarre normalement avec les LED branchées (bouton RST) ;
- *  - l'inventaire et l'état s'affichent sur le moniteur série (115200 bauds).
- * Brochage identique à projet_voiture_sergeev_osmane/Config.h.
  *********************************************************************/
 #include <PeripheriquesIoT.h>
 

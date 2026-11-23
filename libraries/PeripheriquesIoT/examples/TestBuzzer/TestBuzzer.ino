@@ -2,14 +2,6 @@
  * @file  TestBuzzer.ino
  * @author L. Sergeev, J. Osmane
  * @brief Test de la classe Buzzer, sans aucun delay()
- *
- * Séquence répétée en boucle :
- *  1. 3 bips ponctuels ;
- *  2. bip périodique dont la période passe de 500 à 100 ms (recul) ;
- *  3. son continu 1 s ;
- *  4. klaxon (bip grave prioritaire) ;
- *  5. 2 s de silence.
- * Brochage identique à projet_voiture_sergeev_osmane/Config.h.
  *********************************************************************/
 #include <PeripheriquesIoT.h>
 

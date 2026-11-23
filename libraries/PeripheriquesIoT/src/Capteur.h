@@ -11,9 +11,6 @@
 /**
  * @class Capteur
  * @brief Périphérique qui mesure à intervalle régulier, sans bloquer
- *
- * update() se charge du cadencement avec millis() et appelle acquerir()
- * toutes les periodeMs. Les classes filles n'écrivent que acquerir().
  */
 class Capteur : public Peripherique
 {

@@ -81,8 +81,6 @@ struct EtatVoiture
 /**
  * @class Protocole
  * @brief Décodage des commandes (texte → Commande) et encodage de l'état (→ JSON)
- *
- * Classe utilitaire : que des méthodes statiques, pas d'instance.
  */
 class Protocole
 {

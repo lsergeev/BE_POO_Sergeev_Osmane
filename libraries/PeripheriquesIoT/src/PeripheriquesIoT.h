@@ -2,14 +2,6 @@
  * @file  PeripheriquesIoT.h
  * @author L. Sergeev, J. Osmane
  * @brief En-tête unique de la bibliothèque PeripheriquesIoT
- *
- * Hiérarchie :
- *   Peripherique
- *   ├── Capteur ── CapteurUltrason
- *   └── Actionneur ── Led, Buzzer, Servomoteur, MoteurCC ── MoteurBTS7960
- * Exceptions : ErreurPeripherique ── ErreurBroche, ErreurMesure
- *
- * Prérequis : option « C++ Exceptions : Enabled » (Outils de l'IDE).
  *********************************************************************/
 #ifndef PERIPHERIQUES_IOT_H_
 #define PERIPHERIQUES_IOT_H_

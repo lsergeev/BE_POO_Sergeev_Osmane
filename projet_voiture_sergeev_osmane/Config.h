@@ -2,11 +2,6 @@
  * @file  Config.h
  * @author L. Sergeev, J. Osmane
  * @brief Toutes les constantes de l'application : broches, seuils, délais, Wi-Fi
- *
- * Aucune valeur numérique ne doit apparaître ailleurs dans l'application.
- * La bibliothèque PeripheriquesIoT n'inclut jamais ce fichier : elle
- * reçoit ces valeurs par les constructeurs.
- * Justification du brochage : docs/cablage.md
  *********************************************************************/
 #ifndef CONFIG_H_
 #define CONFIG_H_

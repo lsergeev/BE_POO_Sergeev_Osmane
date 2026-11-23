@@ -12,11 +12,6 @@
 /**
  * @class Servomoteur
  * @brief Servo de direction : orienter(-100..100) autour d'un angle neutre
- *
- * L'application raisonne en pourcentage de braquage ; la conversion en
- * angle (neutre ± amplitude) est faite ici une fois pour toutes. Le
- * servo reçoit l'angle neutre dès sa première impulsion : la direction
- * est droite au démarrage, sans à-coup.
  */
 class Servomoteur : public Actionneur
 {

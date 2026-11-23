@@ -14,12 +14,6 @@
 /**
  * @class FiltreMedian
  * @brief Médiane des N dernières valeurs
- *
- * Une médiane élimine les valeurs aberrantes isolées (écho parasite d'un
- * capteur ultrason) là où une moyenne serait faussée. Stockage dans un
- * std::array (taille fixe, pas d'allocation dynamique) utilisé comme
- * tampon circulaire ; std::nth_element trouve la médiane en temps
- * linéaire sans trier tout le tableau.
  * @tparam T type des valeurs (comparable avec <)
  * @tparam N nombre de valeurs conservées
  */

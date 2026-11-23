@@ -12,18 +12,6 @@
 /**
  * @class CapteurUltrason
  * @brief Mesure de distance non bloquante, par interruption
- *
- * À chaque période : exploitation de l'écho précédent, puis nouvelle
- * impulsion de déclenchement (12 µs) et retour de la broche en entrée.
- * La durée de l'écho est horodatée par une interruption sur les deux
- * fronts : contrairement à pulseIn(), rien n'attend l'écho.
- *
- * Diagnostic :
- *  - écho complet → distance (bornée à la portée maximale) ;
- *  - aucun front montant, ou écho jamais retombé → échec.
- * Après echecsMax échecs consécutifs, le capteur n'est plus fiable et
- * distanceCm() lève ErreurMesure : l'application doit alors se mettre
- * en sécurité plutôt que croire qu'il n'y a pas d'obstacle.
  */
 class CapteurUltrason : public Capteur
 {

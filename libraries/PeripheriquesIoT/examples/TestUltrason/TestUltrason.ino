@@ -2,15 +2,6 @@
  * @file  TestUltrason.ino
  * @author L. Sergeev, J. Osmane
  * @brief Test de CapteurUltrason (mesure par interruption, filtre médian)
- *
- * Attendu sur le moniteur série (115200 bauds), 10 fois par seconde :
- *  - la distance en cm (à comparer à une règle à 10, 30 et 100 cm) ;
- *  - vers le vide : la portée maximale (300 cm) ;
- *  - câble débranché : « ErreurMesure : ... » SANS redémarrage de la carte,
- *    puis retour des mesures dès que le câble est rebranché.
- * La LED interne bascule à chaque tour de 1000 boucles : si elle
- * clignote vite, loop() n'est jamais bloquée par la mesure.
- * Brochage identique à projet_voiture_sergeev_osmane/Config.h.
  *********************************************************************/
 #include <PeripheriquesIoT.h>
 
