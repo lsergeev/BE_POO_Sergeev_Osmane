@@ -54,3 +54,23 @@ On ne va pas se mentir : on n'est pas des pros de l'ESP8266. On avance par petit
 *Messages tordus.* `C 50-20`, `K 1` ou `C 101 0` doivent être refusés. On a testé une vingtaine de messages, bons et mauvais, et chaque mauvais lève une `ErreurProtocole` avec la raison. Pour le JSON d'erreur, on remplace les guillemets dans la raison, sinon la page ne pourrait pas le lire.
 
 **Reste à faire :** serveur Wi-Fi + WebSocket, première page, et brancher le tout dans `Application`.
+
+## Séance 2 : premier pilotage depuis le téléphone
+
+**Fait :**
+- WebSockets 2.7.2 installé (la seule bibliothèque externe).
+- `ServeurPilotage` : point d'accès `VoitureRC`, la page sur le port 80, le WebSocket sur le port 81. Un seul conducteur, le deuxième est refusé.
+- Première page : deux curseurs qui reviennent à 0 quand on les lâche, envoi de `C v d` toutes les 100 ms, affichage de l'état.
+- `Application` : le moteur et le servo suivent les curseurs. Les commandes ne s'affichent sur le port série que quand elles changent (`operator!=` de `Commande`).
+- Chien de garde : plus de commande depuis 500 ms, ou déconnexion, et la voiture s'arrête.
+- LED bleue : clignote quand personne ne pilote, fixe quand quelqu'un est connecté.
+
+**Problèmes :**
+
+*Les rappels du serveur.* Le serveur ne doit pas connaître la voiture. Du coup, il appelle des `std::function` que `Application` branche avec des lambdas. Ça marche bien, et le serveur reste réutilisable.
+
+*Le message trop long.* Le WebSocket donne un tableau d'octets sans `\0` à la fin. On le recopie dans un tampon à nous, coupé à 33 caractères : si c'était plus long, `decoder()` le refuse de toute façon.
+
+*Un 2e téléphone.* Sans limite, deux personnes pourraient piloter en même temps. Le 2e reçoit `occupe` et il est déconnecté.
+
+**Reste à faire :** tester sur la carte avec le téléphone, faire valider par l'encadrant, puis la classe `Voiture` en séance 3.

@@ -5,7 +5,7 @@ OSMANE Johan, SERGEEV Leonid.
 
 En plus de la conduite : aide au recul (feux, bip qui accélère, arrêt automatique sous un seuil réglable).
 
-> Séance 1 : la bibliothèque contient la LED, le buzzer, le servo et l'ultrason. Le moteur et la page arrivent en séance 2.
+> En cours (séance 2) : bibliothèque complète, pilotage du moteur et de la direction depuis le téléphone. Reste la classe `Voiture` (recul, phares, klaxon).
 > Conception : [docs/architecture.md](docs/architecture.md).
 
 ## 1. Matériel :
@@ -34,7 +34,7 @@ Détails : [docs/cablage.md](docs/cablage.md).
    - Windows : `mklink /J "%USERPROFILE%\Documents\Arduino\libraries\PeripheriquesIoT" "<dépôt>\libraries\PeripheriquesIoT"`
    - Linux : `ln -s "<dépôt>/libraries/PeripheriquesIoT" ~/Arduino/libraries/`
 
-Bibliothèques : core esp8266 3.1.2, PeripheriquesIoT 0.1.0 (ce dépôt), WebSockets de Markus Sattler (version notée en séance 2).
+Bibliothèques : core esp8266 3.1.2, PeripheriquesIoT 0.1.0 (ce dépôt), WebSockets 2.7.2 de Markus Sattler (gestionnaire de bibliothèques).
 
 ## 4. Compiler et téléverser :
 
@@ -49,7 +49,13 @@ Bibliothèques : core esp8266 3.1.2, PeripheriquesIoT 0.1.0 (ce dépôt), WebSoc
 
 ## 5. Utilisation :
 
-À compléter en séance 2 : Wi-Fi `VoitureRC`, page `http://192.168.4.1`. Protocole : [docs/protocole.md](docs/protocole.md).
+1. Allumer la voiture : la LED bleue clignote lentement.
+2. Sur le téléphone, rejoindre le Wi-Fi `VoitureRC` (mot de passe `insa-voiture`).
+3. Ouvrir `http://192.168.4.1`. Le voyant passe au vert et la LED bleue reste allumée.
+4. Curseur de gauche : vitesse (avant en haut, arrière en bas). Curseur de droite : direction. Ils reviennent à 0 quand on les lâche.
+5. Si on verrouille le téléphone ou qu'on perd le Wi-Fi, la voiture s'arrête toute seule après 0,5 s.
+
+Phares, klaxon et aide au recul : en séance 3. Protocole : [docs/protocole.md](docs/protocole.md).
 
 ## 6. Archive :
 
