@@ -8,6 +8,15 @@
 
 Application::Application()
   : ledEtat_("etat", config::broches::LED_ETAT, config::eclairage::LED_ETAT_ACTIF_BAS),
+    moteur_("propulsion", config::broches::MOTEUR_RPWM, config::broches::MOTEUR_LPWM,
+            config::broches::MOTEUR_ENABLE, config::moteur::FREQUENCE_PWM_HZ,
+            config::moteur::PENTE_ACCELERATION, config::moteur::PENTE_DECELERATION,
+            config::moteur::PAUSE_INVERSION_MS),
+    direction_("direction", config::broches::SERVO, config::direction::ANGLE_NEUTRE,
+               config::direction::AMPLITUDE, config::direction::IMPULSION_MIN_US,
+               config::direction::IMPULSION_MAX_US),
+    serveur_(),
+    derniereCommande_(),
     initialisee_(false)
 {
 }
@@ -26,21 +35,25 @@ void Application::init(void)
   try
   {
     ledEtat_.begin();
+    direction_.begin();   // roues droites dès la première impulsion
+    moteur_.begin();
+    serveur_.surCommande([this](const Commande& commande) { traiterCommande(commande); });
+    serveur_.begin();
     ledEtat_.clignoter(config::eclairage::PERIODE_ATTENTE_MS);
     initialisee_ = true;
   }
-  catch (const ErreurPeripherique& e)
+  catch (const std::exception& e)
   {
+    // ErreurPeripherique (broche, config) ou erreur du Wi-Fi : on ne pilote pas.
     Serial.print(F("Erreur d'initialisation : "));
     Serial.println(e.what());
-    // Dernier recours : la LED interne signale l'erreur si elle est utilisable.
     if (Peripherique::estBrocheValide(config::broches::LED_ETAT))
     {
       pinMode(config::broches::LED_ETAT, OUTPUT);
     }
   }
 
-  Serial << ledEtat_;
+  Serial << ledEtat_ << direction_ << moteur_;
   Serial.println();
 }
 
@@ -49,6 +62,8 @@ void Application::run(void)
   const uint32_t maintenant = millis();
   if (initialisee_)
   {
+    serveur_.update();
+    moteur_.update(maintenant);
     ledEtat_.update(maintenant);
   }
   else if (Peripherique::estBrocheValide(config::broches::LED_ETAT))
@@ -57,5 +72,26 @@ void Application::run(void)
     const bool allumee = (maintenant / (config::eclairage::PERIODE_ERREUR_MS / 2)) % 2 == 0;
     digitalWrite(config::broches::LED_ETAT,
                  (allumee != config::eclairage::LED_ETAT_ACTIF_BAS) ? HIGH : LOW);
+  }
+}
+
+void Application::traiterCommande(const Commande& commande)
+{
+  if (commande != derniereCommande_)
+  {
+    Serial.printf("Commande %d : v=%d d=%d val=%u\n", static_cast<int>(commande.type),
+                  commande.vitesse, commande.direction, commande.valeur);
+    derniereCommande_ = commande;
+  }
+
+  switch (commande.type)
+  {
+    case TypeCommande::CONDUITE:
+      moteur_.setConsigne(commande.vitesse);
+      direction_.orienter(commande.direction);
+      break;
+    default:
+      // Phares, klaxon et seuil : avec la classe Voiture (séance 3).
+      break;
   }
 }

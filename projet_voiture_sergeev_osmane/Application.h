@@ -3,13 +3,15 @@
  * @author L. Sergeev, J. Osmane
  * @brief Fichier header de l'application (chef d'orchestre)
  *
- * Séance 1 : l'application se limite à la LED d'état et à l'inventaire
- * des périphériques. Voiture et ServeurPilotage s'ajoutent aux séances 2 et 3.
+ * Séance 2 : le moteur et la direction sont pilotés depuis le téléphone.
+ * La classe Voiture (recul, phares, klaxon) arrive en séance 3.
  *********************************************************************/
 #ifndef APPLICATION_H_
 #define APPLICATION_H_
 
 #include <PeripheriquesIoT.h>
+#include "Protocole.h"
+#include "ServeurPilotage.h"
 
 /**
   * @class Application
@@ -43,7 +45,14 @@ class Application
     void run(void);
 
   private :
-    Led ledEtat_;          ///< LED bleue de la carte : état du système
-    bool initialisee_;     ///< vrai si init() a réussi
+    /** @brief Applique une commande reçue de la page */
+    void traiterCommande(const Commande& commande);
+
+    Led ledEtat_;                 ///< LED bleue de la carte : état du système
+    MoteurBTS7960 moteur_;        ///< propulsion
+    Servomoteur direction_;       ///< direction
+    ServeurPilotage serveur_;     ///< Wi-Fi, page et WebSocket
+    Commande derniereCommande_;   ///< pour n'afficher que les changements
+    bool initialisee_;            ///< vrai si init() a réussi
 };
 #endif
